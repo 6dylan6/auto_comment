@@ -1,5 +1,5 @@
-# @Time : 2022/2/8 20:50
-# @Author :@Zhang Jiale and @Dimlitter
+# @Time : 2022/2/10
+# @Author :@Zhang Jiale and @Dimlitter @Dylan
 # @File : jdspider.py
 
 import json
@@ -24,7 +24,7 @@ default_logger.addHandler(log_console)
 
 class JDSpider:
     # 爬虫实现类：传入商品类别（如手机、电脑），构造实例。然后调用getData搜集数据。
-    def __init__(self, categlory):
+    def __init__(self, categlory, ck):
         # jD起始搜索页面
         self.startUrl = "https://search.jd.com/Search?keyword=%s&enc=utf-8" % (
             quote(categlory))
@@ -42,11 +42,12 @@ class JDSpider:
             'sec-fetch-site': 'none',
             'sec-fetch-user': '?1',
             'upgrade-insecure-requests': '1',
-            'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/98.0.4758.82 Safari/537.36'
+            'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/105.0.0.0 Safari/537.36'
         }
         self.productsId = self.getId()
-        self.comtype = {1: "nagetive", 2: "medium", 3: "positive"}
+        self.comtype = {1: "差评", 2: "中评", 3: "好评"}
         self.categlory = categlory
+        self.ck = ck
         self.iplist = {
             'http': [],
             'https': []
@@ -67,15 +68,32 @@ class JDSpider:
         return params, url
 
     def getHeaders(self, productid):  # 和初始的self.header不同，这是搜集某个商品的header，加入了商品id，我也不知道去掉了会怎样。
-        header = {"Referer": "https://item.jd.com/%s.html" % (productid),
-                  "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.142 Safari/537.36"
-                  }
+        header = {
+        "Referer": "https://item.jd.com/%s.html" % (productid),
+        "Host": "sclub.jd.com",
+        "Connection": "keep-alive",
+        "Pragma": "no-cache",
+        "Cache-Control": "no-cache",
+        "sec-ch-ua": '"Chromium";v="21", " Not;A Brand";v="99"',
+        "sec-ch-ua-mobile": "?0",
+        "sec-ch-ua-platform": "Windows",
+        "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9",
+        "Sec-Fetch-Site": "none",
+        "Sec-Fetch-Mode": "navigate",
+        "Sec-Fetch-User": "?1",
+        "Sec-Fetch-Dest": "document",
+        "Accept-Encoding": "gzip, deflate, br",
+        "Accept-Language": "zh-CN,zh;q=0.9",
+        "upgrade-insecure-requests": "1",
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/105.0.0.0 Safari/537.36",
+        "Cookie": self.ck
+        }
         return header
 
     def getId(self):  # 获取商品id，为了得到具体商品页面的网址。结果保存在self.productId的数组里
         response = requests.get(self.startUrl, headers=self.headers)
         if response.status_code != 200:
-            default_logger.warning("状态码错误，爬虫连接异常！")
+            default_logger.warning("状态码错误，连接异常！")
         html = etree.HTML(response.text)
         return html.xpath('//li[@class="gl-item"]/@data-sku')
 
@@ -85,10 +103,10 @@ class JDSpider:
 
         comments = []
         scores = []
-        if len(self.productsId) < 6:  # limit the sum of products
+        if len(self.productsId) < 4:  # limit the sum of products
             sum = len(self.productsId)
         else:
-            sum = 5
+            sum = 3
         for j in range(sum):
             id = self.productsId[j]
             header = self.getHeaders(id)
@@ -115,7 +133,7 @@ class JDSpider:
                 if len((res_json['comments'])) == 0:
                     default_logger.warning("本页无评价数据，跳过")
                     break
-                default_logger.info("正在搜集%s %s" %
+                default_logger.info("正在搜集 %s 的%s信息" %
                                     (self.categlory, self.comtype[score]))
                 for cdit in res_json['comments']:
                     comment = cdit['content'].replace(
@@ -123,7 +141,7 @@ class JDSpider:
                     comments.append(comment)
                     scores.append(cdit['score'])
         # savepath = './'+self.categlory+'_'+self.comtype[score]+'.csv'
-        default_logger.warning("已搜集%d 条 %s 评价信息" %
+        default_logger.warning("已搜集%d条%s信息" %
                                (len(comments), self.comtype[score]))
         # 存入列表,简单处理评价
         remarks = []

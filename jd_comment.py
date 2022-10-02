@@ -1,7 +1,12 @@
 # -*- coding: utf-8 -*-
-# @Time : 2022/2/8 20:50
-# @Author : @qiu-lzsnmb and @Dimlitter
-# @File : auto_comment_plus.py
+# 自动带图评价、追评、服务评价，需电脑端CK
+# @Time : 2022/10/2 
+# @Author : @qiu-lzsnmb and @Dimlitter @Dylan
+# @File : auto_comment.py
+'''
+new Env('自动评价');
+8 8 2 10 * https://raw.githubusercontent.com/6dylan6/auto_comment/main/jd_comment.py
+'''
 
 import argparse
 import copy
@@ -10,12 +15,24 @@ import os
 import random
 import sys
 import time
-
-import jieba  # just for linting
-import jieba.analyse
 import requests
-import yaml
-from lxml import etree
+
+try:
+    import jieba  # just for linting
+    import jieba.analyse
+    #import yaml
+    from lxml import etree
+except:
+    os.system('pip3 install lxml &> /dev/null')
+    os.system('pip3 install jieba &> /dev/null')
+    os.system('pip3 install zhon &> /dev/null')
+    import jieba  # just for linting
+    import jieba.analyse
+    #import yaml
+    from lxml import etree
+
+
+
 
 import jdspider
 
@@ -95,7 +112,7 @@ def generation(pname, _class=0, _type=1, opts=None):
     for i, item in enumerate(items):
         opts['logger'].debug('Loop: %d / %d', i + 1, loop_times)
         opts['logger'].debug('Current item: %s', item)
-        spider = jdspider.JDSpider(item)
+        spider = jdspider.JDSpider(item,ck)
         opts['logger'].debug('Successfully created a JDSpider instance')
         # 增加对增值服务的评价鉴别
         if "赠品" in pname or "非实物" in pname or "增值服务" in pname:
@@ -219,7 +236,7 @@ def sunbw(N, opts=None):
                 '//*[@id="main"]/div[2]/div[2]/table')
             opts['logger'].debug('Count of fetched order data: %d', len(elems))
             Order_data.extend(elems)
-    opts['logger'].info(f"当前共有{N['待评价订单']}个需要晒单。")
+    opts['logger'].info(f"当前共有{N['待评价订单']}个需要评价晒单。")
     opts['logger'].debug('Commenting on items')
     for i, Order in enumerate(Order_data):
         if i > 1:
@@ -270,7 +287,7 @@ def sunbw(N, opts=None):
         imgurl = imgdata["imgComments"]["imgList"][0]["imageUrl"]
         opts['logger'].debug('Image URL: %s', imgurl)
 
-        opts['logger'].info(f'\t\t图片url={imgurl}')
+        opts['logger'].info(f'\t图片url={imgurl}')
         # 提交晒单
         opts['logger'].debug('Preparing for commenting')
         url2 = "https://club.jd.com/myJdcomments/saveProductComment.action"
@@ -307,7 +324,6 @@ def review(N, opts=None):
     req_et = []
     Order_data = []
     loop_times = 2
-    print(loop_times)
     opts['logger'].debug('Fetching website data')
     opts['logger'].debug('Total loop times: %d', loop_times)
     for i in range(loop_times):
@@ -350,7 +366,7 @@ def review(N, opts=None):
     opts['logger'].info(f"当前共有{N['待追评']}个需要追评。")
     opts['logger'].debug('Commenting on items')
     for i, Order in enumerate(Order_data):
-        if i > 1:
+        if i + 1 > 1:
             opts['logger'].info(f'\t已评价10个订单，跳出')
             break
         oname = Order.xpath('td[1]/div/div[2]/div/a/text()')[0]
@@ -366,7 +382,7 @@ def review(N, opts=None):
         opts['logger'].debug('oid: %s', oid)
         opts['logger'].info(f'\t开始第{i+1}个订单: {oid}')
         _, context = generation(oname, _type=0, opts=opts)
-        opts['logger'].info(f'\t\t追评内容：{context}')
+        opts['logger'].info(f'\t追评内容：{context}')
         data1 = {
             'orderId': oid,
             'productId': pid,
@@ -384,8 +400,6 @@ def review(N, opts=None):
         opts['logger'].debug('Sleep time (s): %.1f', REVIEW_SLEEP_SEC)
         time.sleep(REVIEW_SLEEP_SEC)
         N['待追评'] -= 1
-        if i + 1 > 1:
-            break
     return N
 
 
@@ -436,7 +450,7 @@ def Service_rating(N, opts=None):
     opts['logger'].info(f"当前共有{N['服务评价']}个需要服务评价。")
     opts['logger'].debug('Commenting on items')
     for i, Order in enumerate(Order_data):
-        if i > 1:
+        if i + 1 > 1:
             opts['logger'].info(f'\t已评价10个订单，跳出')
             break
         oname = Order.xpath('td[1]/div[1]/div[2]/div/a/text()')[0]
@@ -487,7 +501,7 @@ def main(opts=None):
     N = No(opts)
     opts['logger'].debug('N value after executing No(): %s', N)
     if not N:
-        opts['logger'].error('Ck错误，请检查重新抓取！')
+        opts['logger'].error('CK错误，请确认是否电脑版CK！')
         exit()
     if N['待评价订单'] != 0:
         opts['logger'].info("1.开始评价晒单")
@@ -553,11 +567,11 @@ if __name__ == '__main__':
     # NOTE: The alignment number should set to 19 considering the style
     # controling characters. When it comes to file logger, the number should
     # set to 8.
-    formatter = StyleFormatter('%(asctime)s %(levelname)-19s %(message)s')
+    formatter = StyleFormatter('%(asctime)s %(levelname)-19s %(message)s',"%F %T")
     rawformatter = StyleFormatter('%(asctime)s %(levelname)-8s %(message)s', use_style=False)
     console = logging.StreamHandler()
     console.setLevel(_logging_level)
-    console.setFormatter(formatter)
+    console.setFormatter(logging.Formatter('%(message)s'))
     logger.addHandler(console)
     opts['logger'] = logger
     # It's a hack!!!
@@ -595,24 +609,24 @@ if __name__ == '__main__':
     logger.debug('  SERVICE_RATING_SLEEP_SEC: %s', SERVICE_RATING_SLEEP_SEC)
 
     # parse configurations
-    logger.debug('Reading the configuration file')
-    if os.path.exists(USER_CONFIG_PATH):
-        logger.debug('User configuration file exists')
-        _cfg_path = USER_CONFIG_PATH
-    else:
-        logger.debug('User configuration file doesn\'t exist, fallback to the default one')
-        _cfg_path = CONFIG_PATH
-    with open(_cfg_path, 'r', encoding='utf-8') as f:
-        cfg = yaml.safe_load(f)
-    logger.debug('Closed the configuration file')
-    logger.debug('Configurations in Python-dict format: %s', cfg)
-    if "JD_COOKIE" in os.environ:
-    if len (os.environ["PC_COOKIE"]) > 1:
-        ck = os.environ["PC_COOKIE"]
-        logger.info ("已获取并使用Env环境 Cookie")
+    #logger.debug('Reading the configuration file')
+    #if os.path.exists(USER_CONFIG_PATH):
+        #logger.debug('User configuration file exists')
+        #_cfg_path = USER_CONFIG_PATH
+    #else:
+        #logger.debug('User configuration file doesn\'t exist, fallback to the default one')
+        #_cfg_path = CONFIG_PATH
+   # with open(_cfg_path, 'r', encoding='utf-8') as f:
+        #cfg = yaml.safe_load(f)
+        #print()
+    #logger.debug('Closed the configuration file')
+    #logger.debug('Configurations in Python-dict format: %s', cfg)
+    if "PC_COOKIE" in os.environ:
+        if len(os.environ["PC_COOKIE"]) > 1:
+            ck = os.environ["PC_COOKIE"]
+            logger.info ("已获取并使用Env环境 Cookie")
 
     #ck = cfg['user']['cookie']
-
     headers = {
         'cookie': ck.encode("utf-8"),
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/98.0.4758.82 Safari/537.36',
