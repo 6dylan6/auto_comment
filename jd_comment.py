@@ -19,7 +19,7 @@ import time
 try:
     import jieba  # just for linting
     import jieba.analyse
-    
+    import requests
     #import yaml
     from lxml import etree
 except:
