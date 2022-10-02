@@ -238,43 +238,40 @@ def sunbw(N, opts=None):
                 '//*[@id="main"]/div[2]/div[2]/table')
             opts['logger'].debug('Count of fetched order data: %d', len(elems))
             Order_data.extend(elems)
-    opts['logger'].info(f"当前共有{N['待评价订单']}个需要评价晒单。")
+
+    opts['logger'].info(f"当前共有{N['待评价订单']}个评价。")
     opts['logger'].debug('Commenting on items')
     for i, Order in enumerate(Order_data):
-        if i  +1 > 10:
+        if i + 1 > 10:
             opts['logger'].info(f'\t已评价10个订单，跳出')
             break
-        oname = Order.xpath(
-                'tr[@class="tr-bd"]/td[1]/div[1]/div[2]/div/a/text()')[0]
-        pid = Order.xpath(
-                'tr[@class="tr-bd"]/td[1]/div[1]/div[2]/div/a/@href')[0].replace('//item.jd.com/', '').replace('.html', '')
-        oid = Order.xpath('tr[@class="tr-th"]/td/span[3]/a/text()')[0]
-        #print (oname,oid,pid)
-        #sys.exit()
-        opts['logger'].info(f'\t开始第{i+1}个订单: {oid}')
-        opts['logger'].debug('pid: %s', pid)
-        opts['logger'].debug('oid: %s', oid)
-        xing, Str = generation(oname, opts=opts)
-        opts['logger'].info(f'\t评价信息：{xing}星  ' + Str)
-        # 获取图片
-        url1 = (f'https://club.jd.com/discussion/getProductPageImageCommentList'
-                f'.action?productId={pid}')
-        opts['logger'].debug('Fetching images using the default URL')
-        opts['logger'].debug('URL: %s', url1)
-        req1 = requests.get(url1, headers=headers)
-        opts['logger'].debug(
-            'Successfully accepted the response with status code %d',
-            req1.status_code)
-        if not req.ok:
-            opts['logger'].warning(
-                'Status code of the response is %d, not 200', req1.status_code)
-        imgdata = req1.json()
-        opts['logger'].debug('Image data: %s', imgdata)
-        if imgdata["imgComments"]["imgCommentCount"] == 0:
-            opts['logger'].debug('Count of fetched image comments is 0')
-            opts['logger'].debug('Fetching images using another URL')
-            url1 = ('https://club.jd.com/discussion/getProductPageImage'
-                    'CommentList.action?productId=1190881')
+        try:
+            oid = Order.xpath('tr[@class="tr-th"]/td/span[3]/a/text()')[0]
+            opts['logger'].debug('oid: %s', oid)
+            oname_data = Order.xpath(
+                'tr[@class="tr-bd"]/td[1]/div[1]/div[2]/div/a/text()')
+            opts['logger'].debug('oname_data: %s', oname_data)
+            pid_data = Order.xpath(
+                'tr[@class="tr-bd"]/td[1]/div[1]/div[2]/div/a/@href')
+            opts['logger'].debug('pid_data: %s', pid_data)
+        except IndexError:
+            opts['logger'].warning(f"第{i + 1}个订单未查找到商品，跳过。")
+            continue
+        loop_times1 = min(len(oname_data), len(pid_data))
+        opts['logger'].debug('Commenting on orders')
+        opts['logger'].debug('Total loop times: %d', loop_times1)
+        idx = 0
+        for oname, pid in zip(oname_data, pid_data):
+            pid = pid.replace('//item.jd.com/', '').replace('.html', '')
+            opts['logger'].info(f'\t开始第{i+1}个订单: {oid}')
+            opts['logger'].debug('pid: %s', pid)
+            opts['logger'].debug('oid: %s', oid)
+            xing, Str = generation(oname, opts=opts)
+            opts['logger'].info(f'\t评价信息：{xing}星  ' + Str)
+            # 获取图片
+            url1 = (f'https://club.jd.com/discussion/getProductPageImageCommentList'
+                    f'.action?productId={pid}')
+            opts['logger'].debug('Fetching images using the default URL')
             opts['logger'].debug('URL: %s', url1)
             req1 = requests.get(url1, headers=headers)
             opts['logger'].debug(
@@ -282,41 +279,57 @@ def sunbw(N, opts=None):
                 req1.status_code)
             if not req.ok:
                 opts['logger'].warning(
-                    'Status code of the response is %d, not 200',
-                    req1.status_code)
+                    'Status code of the response is %d, not 200', req1.status_code)
             imgdata = req1.json()
             opts['logger'].debug('Image data: %s', imgdata)
-        imgurl = imgdata["imgComments"]["imgList"][0]["imageUrl"]
-        opts['logger'].debug('Image URL: %s', imgurl)
-
-        opts['logger'].info(f'\t图片：{imgurl}')
-        # 提交晒单
-        opts['logger'].debug('Preparing for commenting')
-        url2 = "https://club.jd.com/myJdcomments/saveProductComment.action"
-        opts['logger'].debug('URL: %s', url2)
-        headers['Referer'] = ('https://club.jd.com/myJdcomments/orderVoucher.action')
-        headers['Origin'] = 'https://club.jd.com'
-        headers['Content-Type'] = 'application/x-www-form-urlencoded'
-        opts['logger'].debug('New header for this request: %s', headers)
-        data = {
-            'orderId': oid,
-            'productId': pid,
-            'score': str(xing),  # 商品几星
-            'content': bytes(Str, encoding="gbk"),  # 评价内容
-            'imgs': imgurl,
-            'saveStatus': 2,
-            'anonymousFlag': 1
-        }
-        opts['logger'].debug('Data: %s', data)
-        if not opts.get('dry_run'):
-            opts['logger'].debug('Sending comment request')
-            req_url2 = requests.post(url2, data=data, headers=headers)
-        else:
-            opts['logger'].debug('Skipped sending comment request in dry run')
-        opts['logger'].info('完成')
-        opts['logger'].debug('Sleep time (s): %.1f', SUNBW_SLEEP_SEC)
-        time.sleep(SUNBW_SLEEP_SEC)
-        N['待评价订单'] -= 1
+            if imgdata["imgComments"]["imgCommentCount"] == 0:
+                opts['logger'].debug('Count of fetched image comments is 0')
+                opts['logger'].debug('Fetching images using another URL')
+                url1 = ('https://club.jd.com/discussion/getProductPageImage'
+                        'CommentList.action?productId=1190881')
+                opts['logger'].debug('URL: %s', url1)
+                req1 = requests.get(url1, headers=headers)
+                opts['logger'].debug(
+                    'Successfully accepted the response with status code %d',
+                    req1.status_code)
+                if not req.ok:
+                    opts['logger'].warning(
+                        'Status code of the response is %d, not 200',
+                        req1.status_code)
+                imgdata = req1.json()
+                opts['logger'].debug('Image data: %s', imgdata)
+            imgurl = imgdata["imgComments"]["imgList"][0]["imageUrl"]
+            opts['logger'].debug('Image URL: %s', imgurl)
+            
+            opts['logger'].info(f'\t图片：{imgurl}')
+            # 提交晒单
+            opts['logger'].debug('Preparing for commenting')
+            url2 = "https://club.jd.com/myJdcomments/saveProductComment.action"
+            opts['logger'].debug('URL: %s', url2)
+            headers['Referer'] = ('https://club.jd.com/myJdcomments/orderVoucher.action')
+            headers['Origin'] = 'https://club.jd.com'
+            headers['Content-Type'] = 'application/x-www-form-urlencoded'
+            opts['logger'].debug('New header for this request: %s', headers)
+            data = {
+             'orderId': oid,
+             'productId': pid,
+             'score': str(xing),  # 商品几星
+             'content': bytes(Str, encoding="gbk"),  # 评价内容
+             'imgs': imgurl,
+             'saveStatus': 2,
+             'anonymousFlag': 1
+             }
+            opts['logger'].debug('Data: %s', data)
+            if not opts.get('dry_run'):
+                opts['logger'].debug('Sending comment request')
+                pj2 = requests.post(url2, headers=headers, data=data)
+            else:
+                opts['logger'].debug(
+                    'Skipped sending comment request in dry run')
+            opts['logger'].debug('Sleep time (s): %.1f', ORDINARY_SLEEP_SEC)
+            time.sleep(ORDINARY_SLEEP_SEC)
+            idx += 1
+    N['待评价订单'] -= 1
     return N
 
 
