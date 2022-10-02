@@ -7,7 +7,6 @@
 new Env('自动评价');
 8 8 2 10 * https://raw.githubusercontent.com/6dylan6/auto_comment/main/jd_comment.py
 '''
-
 import argparse
 import copy
 import logging
@@ -26,7 +25,7 @@ except:
     os.system('pip3 install lxml &> /dev/null')
     os.system('pip3 install jieba &> /dev/null')
     os.system('pip3 install zhon &> /dev/null')
-    import jieba  # just for linting
+    import jieba 
     import jieba.analyse
     #import yaml
     from lxml import etree
@@ -239,7 +238,7 @@ def sunbw(N, opts=None):
     opts['logger'].info(f"当前共有{N['待评价订单']}个需要评价晒单。")
     opts['logger'].debug('Commenting on items')
     for i, Order in enumerate(Order_data):
-        if i > 1:
+        if i  +1 > 10:
             opts['logger'].info(f'\t已评价10个订单，跳出')
             break
         oname = Order.xpath(
@@ -253,7 +252,7 @@ def sunbw(N, opts=None):
         opts['logger'].debug('pid: %s', pid)
         opts['logger'].debug('oid: %s', oid)
         xing, Str = generation(oname, opts=opts)
-        opts['logger'].info(f'\t\评价内容：{xing}星' + Str)
+        opts['logger'].info(f'\t评价信息：{xing}星  ' + Str)
         # 获取图片
         url1 = (f'https://club.jd.com/discussion/getProductPageImageCommentList'
                 f'.action?productId={pid}')
@@ -287,7 +286,7 @@ def sunbw(N, opts=None):
         imgurl = imgdata["imgComments"]["imgList"][0]["imageUrl"]
         opts['logger'].debug('Image URL: %s', imgurl)
 
-        opts['logger'].info(f'\t图片url={imgurl}')
+        opts['logger'].info(f'\t图片：{imgurl}')
         # 提交晒单
         opts['logger'].debug('Preparing for commenting')
         url2 = "https://club.jd.com/myJdcomments/saveProductComment.action"
@@ -366,7 +365,7 @@ def review(N, opts=None):
     opts['logger'].info(f"当前共有{N['待追评']}个需要追评。")
     opts['logger'].debug('Commenting on items')
     for i, Order in enumerate(Order_data):
-        if i + 1 > 1:
+        if i + 1 > 10:
             opts['logger'].info(f'\t已评价10个订单，跳出')
             break
         oname = Order.xpath('td[1]/div/div[2]/div/a/text()')[0]
@@ -450,7 +449,7 @@ def Service_rating(N, opts=None):
     opts['logger'].info(f"当前共有{N['服务评价']}个需要服务评价。")
     opts['logger'].debug('Commenting on items')
     for i, Order in enumerate(Order_data):
-        if i + 1 > 1:
+        if i + 1 > 10:
             opts['logger'].info(f'\t已评价10个订单，跳出')
             break
         oname = Order.xpath('td[1]/div[1]/div[2]/div/a/text()')[0]
@@ -478,7 +477,7 @@ def Service_rating(N, opts=None):
             pj1 = requests.post(url1, headers=headers, data=data1)
         else:
             opts['logger'].debug('Skipped sending comment request in dry run')
-        opts['logger'].info("\t\t " + pj1.text)
+        opts['logger'].info("\t " + pj1.text)
         opts['logger'].debug('Sleep time (s): %.1f', SERVICE_RATING_SLEEP_SEC)
         time.sleep(SERVICE_RATING_SLEEP_SEC)
         N['服务评价'] -= 1
@@ -522,10 +521,6 @@ def main(opts=None):
         N = No(opts)
         opts['logger'].debug('N value after executing No(): %s', N)
     opts['logger'].info("本次运行完成！")
-    #for i in N:
-    #    if N[i] != 0:
-    #        opts['logger'].warning("出现了二次错误，跳过了部分，重新尝试")
-    #        main(opts)
 
 
 if __name__ == '__main__':
@@ -624,9 +619,10 @@ if __name__ == '__main__':
     if "PC_COOKIE" in os.environ:
         if len(os.environ["PC_COOKIE"]) > 1:
             ck = os.environ["PC_COOKIE"]
-            logger.info ("已获取并使用Env环境 Cookie")
-
-    #ck = cfg['user']['cookie']
+            logger.info ("已获取环境变量 CK")
+        else:
+            logger.info("请添加电脑端CK变量PC_COOKIE")
+            sys.exit(1)
     headers = {
         'cookie': ck.encode("utf-8"),
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/98.0.4758.82 Safari/537.36',
