@@ -1,5 +1,5 @@
-# @Time : 2022/2/10
-# @Author :@Zhang Jiale and @Dimlitter @Dylan
+# @Time : 2022/10/2
+# @Author :@Zhang Jiale @Dimlitter @6dylan6
 # @File : jdspider.py
 
 import json
@@ -69,24 +69,8 @@ class JDSpider:
 
     def getHeaders(self, productid):  # 和初始的self.header不同，这是搜集某个商品的header，加入了商品id，我也不知道去掉了会怎样。
         header = {
-        "Referer": "https://item.jd.com/%s.html" % (productid),
-        "Host": "sclub.jd.com",
-        "Connection": "keep-alive",
-        "Pragma": "no-cache",
-        "Cache-Control": "no-cache",
-        "sec-ch-ua": '"Chromium";v="21", " Not;A Brand";v="99"',
-        "sec-ch-ua-mobile": "?0",
-        "sec-ch-ua-platform": "Windows",
-        "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9",
-        "Sec-Fetch-Site": "none",
-        "Sec-Fetch-Mode": "navigate",
-        "Sec-Fetch-User": "?1",
-        "Sec-Fetch-Dest": "document",
-        "Accept-Encoding": "gzip, deflate, br",
-        "Accept-Language": "zh-CN,zh;q=0.9",
-        "upgrade-insecure-requests": "1",
         "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/105.0.0.0 Safari/537.36",
-        "Cookie": self.ck
+        "Cookie": self.ck.encode("utf-8")
         }
         return header
 
