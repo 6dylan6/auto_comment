@@ -117,7 +117,7 @@ def generation(pname, _class=0, _type=1, opts=None):
         spider = jdspider.JDSpider(item,ck)
         opts['logger'].debug('Successfully created a JDSpider instance')
         # 增加对增值服务的评价鉴别
-        if "赠品" in pname or "非实物" in pname or "增值服务" in pname:
+        if "赠品" in pname or "非实物" in pname or "非卖品" in pname or "增值服务" in pname:
             result = [
                 "赠品挺好的。",
                 "很贴心，能有这样免费赠送的赠品!",
