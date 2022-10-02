@@ -14,22 +14,25 @@ import os
 import random
 import sys
 import time
-import requests
+
 
 try:
     import jieba  # just for linting
     import jieba.analyse
+    
     #import yaml
     from lxml import etree
 except:
+    print('解决依赖问题...稍等')
     os.system('pip3 install lxml &> /dev/null')
     os.system('pip3 install jieba &> /dev/null')
     os.system('pip3 install zhon &> /dev/null')
+    os.system('pip3 install requests &> /dev/null')
     import jieba 
     import jieba.analyse
     #import yaml
     from lxml import etree
-
+    import requests
 
 
 
@@ -620,9 +623,9 @@ if __name__ == '__main__':
         if len(os.environ["PC_COOKIE"]) > 1:
             ck = os.environ["PC_COOKIE"]
             logger.info ("已获取环境变量 CK")
-        else:
-            logger.info("请添加电脑端CK变量PC_COOKIE")
-            sys.exit(1)
+    else:
+        logger.info("没有设置变量PC_COOKIE，请添加电脑端CK到环境变量")
+        sys.exit(1)
     headers = {
         'cookie': ck.encode("utf-8"),
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/98.0.4758.82 Safari/537.36',
