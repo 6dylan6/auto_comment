@@ -7,7 +7,7 @@ JD自动评价（评价晒单带图，追评，服务评价）
 
 浏览器登录抓取CK（电脑端CK），添加变量PC_COOKIE，每次运行，最多评价10个订单
 
-www的那个地址抓CK，登录后F12，输入document.cookie，输出的那串整个复制
+www的那个地址抓CK，登录后F12点到network，不要用命令document.cookie抓，会不完整，找带cookie的请求复制
 
 感谢原库作者https://github.com/Dimlitter/jd_AutoComment  在其基础上进行修改优化，适配青龙面板，自动安装依赖
 
