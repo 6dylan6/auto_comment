@@ -1,5 +1,5 @@
 # auto_comment
-JD自动评价,带图
+JD自动评价（评价晒单带图，追评，服务评价）
 
 拉库命令 ql repo https://github.com/6dylan6/auto_comment.git "jd_" "" "jdspider"
 
@@ -11,6 +11,6 @@ www的那个地址抓CK，登录后F12，输入document.cookie，输出的那串
 
 感谢原库作者https://github.com/Dimlitter/jd_AutoComment  在其基础上进行修改优化，适配青龙面板，自动安装依赖
 
-初步使用符合预期，有问题欢迎提pr、issue
+有问题欢迎提pr、issue
 
 ![image](https://i.postimg.cc/NG6g4pHf/1.jpg)
