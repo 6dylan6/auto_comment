@@ -8,6 +8,7 @@ new Env('评价依赖安装');
 import os
 from time import sleep
 print('第一次运行评价出错才运行此程序，如果没有问题请勿运行，以免弄出问题!!!')
+sleep(2)
 print('10s后开始安装依赖......')
 sleep(10)
 os.system('apk add --no-cache libxml2-dev libxslt-dev')
