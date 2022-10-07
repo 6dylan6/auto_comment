@@ -277,7 +277,7 @@ def sunbw(N, opts=None):
             opts['logger'].debug(
                 'Successfully accepted the response with status code %d',
                 req1.status_code)
-            if not req.ok:
+            if not req1.ok:
                 opts['logger'].warning(
                     'Status code of the response is %d, not 200', req1.status_code)
             imgdata = req1.json()
@@ -292,16 +292,17 @@ def sunbw(N, opts=None):
                 opts['logger'].debug(
                     'Successfully accepted the response with status code %d',
                     req1.status_code)
-                if not req.ok:
+                if not req1.ok:
                     opts['logger'].warning(
                         'Status code of the response is %d, not 200',
                         req1.status_code)
                 imgdata = req1.json()
                 opts['logger'].debug('Image data: %s', imgdata)
             imgurl = imgdata["imgComments"]["imgList"][0]["imageUrl"]
+            imgurl2 = imgdata["imgComments"]["imgList"][1]["imageUrl"]
             opts['logger'].debug('Image URL: %s', imgurl)
             
-            opts['logger'].info(f'\t图片：{imgurl}')
+            opts['logger'].info(f'\t图片：{imgurl + "," + imgurl2}')
             # 提交晒单
             opts['logger'].debug('Preparing for commenting')
             url2 = "https://club.jd.com/myJdcomments/saveProductComment.action"
@@ -315,7 +316,7 @@ def sunbw(N, opts=None):
              'productId': pid,
              'score': str(xing),  # 商品几星
              'content': bytes(Str, encoding="gbk"),  # 评价内容
-             'imgs': imgurl,
+             'imgs': imgurl + ',' + imgurl2,
              'saveStatus': 2,
              'anonymousFlag': 1
              }
@@ -323,6 +324,8 @@ def sunbw(N, opts=None):
             if not opts.get('dry_run'):
                 opts['logger'].debug('Sending comment request')
                 pj2 = requests.post(url2, headers=headers, data=data)
+                if pj2.ok:
+                    opts['logger'].info(f'\t提交成功！')
             else:
                 opts['logger'].debug(
                     'Skipped sending comment request in dry run')
@@ -409,9 +412,10 @@ def review(N, opts=None):
         if not opts.get('dry_run'):
             opts['logger'].debug('Sending comment request')
             req_url1 = requests.post(url1, headers=headers, data=data1)
+            if req_url1.ok:
+                opts['logger'].info(f'\t提交成功！')
         else:
             opts['logger'].debug('Skipped sending comment request in dry run')
-        opts['logger'].info('完成')
         opts['logger'].debug('Sleep time (s): %.1f', REVIEW_SLEEP_SEC)
         time.sleep(REVIEW_SLEEP_SEC)
         N['待追评'] -= 1
@@ -491,6 +495,8 @@ def Service_rating(N, opts=None):
         if not opts.get('dry_run'):
             opts['logger'].debug('Sending comment request')
             pj1 = requests.post(url1, headers=headers, data=data1)
+            if pj1.ok:
+                opts['logger'].info(f'\t提交成功！')
         else:
             opts['logger'].debug('Skipped sending comment request in dry run')
         opts['logger'].info("\t " + pj1.text)
