@@ -267,7 +267,7 @@ def sunbw(N, opts=None):
             opts['logger'].debug('pid: %s', pid)
             opts['logger'].debug('oid: %s', oid)
             xing, Str = generation(oname, opts=opts)
-            opts['logger'].info(f'\t评价信息：{xing}星  ' + Str)
+            opts['logger'].info(f'评价信息：{xing}星  ' + Str)
             # 获取图片
             url1 = (f'https://club.jd.com/discussion/getProductPageImageCommentList'
                     f'.action?productId={pid}')
@@ -302,7 +302,7 @@ def sunbw(N, opts=None):
             imgurl2 = imgdata["imgComments"]["imgList"][1]["imageUrl"]
             opts['logger'].debug('Image URL: %s', imgurl)
             
-            opts['logger'].info(f'\t图片：{imgurl + "," + imgurl2}')
+            opts['logger'].info(f'图片：{imgurl + "," + imgurl2}')
             # 提交晒单
             opts['logger'].debug('Preparing for commenting')
             url2 = "https://club.jd.com/myJdcomments/saveProductComment.action"
@@ -325,7 +325,7 @@ def sunbw(N, opts=None):
                 opts['logger'].debug('Sending comment request')
                 pj2 = requests.post(url2, headers=headers, data=data)
                 if pj2.ok:
-                    opts['logger'].info(f'\t提交成功！')
+                    opts['logger'].info(f'提交成功！')
             else:
                 opts['logger'].debug(
                     'Skipped sending comment request in dry run')
@@ -400,7 +400,7 @@ def review(N, opts=None):
         opts['logger'].debug('oid: %s', oid)
         opts['logger'].info(f'\t开始第{i+1}个订单: {oid}')
         _, context = generation(oname, _type=0, opts=opts)
-        opts['logger'].info(f'\t追评内容：{context}')
+        opts['logger'].info(f'追评内容：{context}')
         data1 = {
             'orderId': oid,
             'productId': pid,
@@ -413,7 +413,7 @@ def review(N, opts=None):
             opts['logger'].debug('Sending comment request')
             req_url1 = requests.post(url1, headers=headers, data=data1)
             if req_url1.ok:
-                opts['logger'].info(f'\t提交成功！')
+                opts['logger'].info(f'提交成功！')
         else:
             opts['logger'].debug('Skipped sending comment request in dry run')
         opts['logger'].debug('Sleep time (s): %.1f', REVIEW_SLEEP_SEC)
@@ -496,10 +496,10 @@ def Service_rating(N, opts=None):
             opts['logger'].debug('Sending comment request')
             pj1 = requests.post(url1, headers=headers, data=data1)
             if pj1.ok:
-                opts['logger'].info(f'\t提交成功！')
+                opts['logger'].info(f'提交成功！')
         else:
             opts['logger'].debug('Skipped sending comment request in dry run')
-        opts['logger'].info("\t " + pj1.text)
+        #opts['logger'].info("\t " + pj1.text)
         opts['logger'].debug('Sleep time (s): %.1f', SERVICE_RATING_SLEEP_SEC)
         time.sleep(SERVICE_RATING_SLEEP_SEC)
         N['服务评价'] -= 1
