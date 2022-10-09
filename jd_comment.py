@@ -225,19 +225,19 @@ def sunbw(N, opts=None):
             '//*[@id="main"]/div[2]/div[2]/table/tbody')
         opts['logger'].debug('Count of fetched order data: %d', len(elems))
         Order_data.extend(elems)
-    if len(Order_data) != N['待评价订单']:
-        opts['logger'].debug(
-            'Count of fetched order data doesn\'t equal N["待评价订单"]')
-        opts['logger'].debug('Clear the list Order_data')
-        Order_data = []
-        opts['logger'].debug('Total loop times: %d', loop_times)
-        for idx, i in enumerate(req_et):
-            opts['logger'].debug('Loop: %d / %d', idx + 1, loop_times)
-            opts['logger'].debug('Fetching order data in another XPath')
-            elems = i.xpath(
-                '//*[@id="main"]/div[2]/div[2]/table')
-            opts['logger'].debug('Count of fetched order data: %d', len(elems))
-            Order_data.extend(elems)
+    #if len(Order_data) != N['待评价订单']:
+    #    opts['logger'].debug(
+    #        'Count of fetched order data doesn\'t equal N["待评价订单"]')
+    #    opts['logger'].debug('Clear the list Order_data')
+    #    Order_data = []
+    #    opts['logger'].debug('Total loop times: %d', loop_times)
+    #    for idx, i in enumerate(req_et):
+    #        opts['logger'].debug('Loop: %d / %d', idx + 1, loop_times)
+    #        opts['logger'].debug('Fetching order data in another XPath')
+    #        elems = i.xpath(
+    #            '//*[@id="main"]/div[2]/div[2]/table')
+    #        opts['logger'].debug('Count of fetched order data: %d', len(elems))
+    #        Order_data.extend(elems)
 
     opts['logger'].info(f"当前共有{N['待评价订单']}个评价。")
     opts['logger'].debug('Commenting on items')
@@ -298,8 +298,12 @@ def sunbw(N, opts=None):
                         req1.status_code)
                 imgdata = req1.json()
                 opts['logger'].debug('Image data: %s', imgdata)
-            imgurl = imgdata["imgComments"]["imgList"][0]["imageUrl"]
-            imgurl2 = imgdata["imgComments"]["imgList"][1]["imageUrl"]
+            try:
+                imgurl = imgdata["imgComments"]["imgList"][0]["imageUrl"]
+                imgurl2 = imgdata["imgComments"]["imgList"][1]["imageUrl"]
+            except Exception:
+                imgurl = ''
+                imgurl2 = ''
             opts['logger'].debug('Image URL: %s', imgurl)
             
             opts['logger'].info(f'图片：{imgurl + "," + imgurl2}')
@@ -367,20 +371,20 @@ def review(N, opts=None):
             '//*[@id="main"]/div[2]/div[2]/table/tr[@class="tr-bd"]')
         opts['logger'].debug('Count of fetched order data: %d', len(elems))
         Order_data.extend(elems)
-    if len(Order_data) != N['待追评']:
-        opts['logger'].debug(
-            'Count of fetched order data doesn\'t equal N["待追评"]')
-        # NOTE: Need them?
-        # opts['logger'].debug('Clear the list Order_data')
-        # Order_data = []
-        opts['logger'].debug('Total loop times: %d', loop_times)
-        for idx, i in enumerate(req_et):
-            opts['logger'].debug('Loop: %d / %d', idx + 1, loop_times)
-            opts['logger'].debug('Fetching order data in another XPath')
-            elems = i.xpath(
-                '//*[@id="main"]/div[2]/div[2]/table/tbody/tr[@class="tr-bd"]')
-            opts['logger'].debug('Count of fetched order data: %d', len(elems))
-            Order_data.extend(elems)
+    #if len(Order_data) != N['待追评']:
+    #    opts['logger'].debug(
+    #        'Count of fetched order data doesn\'t equal N["待追评"]')
+    #    # NOTE: Need them?
+    #    # opts['logger'].debug('Clear the list Order_data')
+    #    # Order_data = []
+    #    opts['logger'].debug('Total loop times: %d', loop_times)
+    #    for idx, i in enumerate(req_et):
+    #        opts['logger'].debug('Loop: %d / %d', idx + 1, loop_times)
+    #        opts['logger'].debug('Fetching order data in another XPath')
+    #        elems = i.xpath(
+    #            '//*[@id="main"]/div[2]/div[2]/table/tbody/tr[@class="tr-bd"]')
+    #        opts['logger'].debug('Count of fetched order data: %d', len(elems))
+    #        Order_data.extend(elems)
     opts['logger'].info(f"当前共有{N['待追评']}个需要追评。")
     opts['logger'].debug('Commenting on items')
     for i, Order in enumerate(Order_data):
@@ -639,9 +643,12 @@ if __name__ == '__main__':
     #logger.debug('Closed the configuration file')
     #logger.debug('Configurations in Python-dict format: %s', cfg)
     if "PC_COOKIE" in os.environ:
-        if len(os.environ["PC_COOKIE"]) > 1:
+        if len(os.environ["PC_COOKIE"]) > 200:
             ck = os.environ["PC_COOKIE"]
             logger.info ("已获取环境变量 CK")
+        else:
+            logger.info ("CK错误，请确认是否电脑版CK！")
+            sys.exit(1)
     else:
         logger.info("没有设置变量PC_COOKIE，请添加电脑端CK到环境变量")
         sys.exit(1)
