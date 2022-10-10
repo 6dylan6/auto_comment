@@ -22,6 +22,7 @@ try:
     import requests
     #import yaml
     from lxml import etree
+    import zhon.hanzi
 except:
     print('解决依赖问题...稍等')
     os.system('pip3 install lxml &> /dev/null')
