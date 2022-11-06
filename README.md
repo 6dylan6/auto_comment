@@ -15,7 +15,8 @@ www的那个地址抓CK，登录后F12点到network，不要用命令document.co
 
 更新日志：
 2022/11/6
-新增多账号，
-报错不停止运行
+新增多账号；
+报错不停止运行；
+倒序评价，优先比较老的订单；
 
 ![image](https://i.postimg.cc/NG6g4pHf/1.jpg)
