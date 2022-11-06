@@ -117,7 +117,7 @@ def generation(pname, _class=0, _type=1, opts=None):
         spider = jdspider.JDSpider(item,ck)
         opts['logger'].debug('Successfully created a JDSpider instance')
         # 增加对增值服务的评价鉴别
-        if "赠品" in pname or "非实物" in pname or "权益" in pname or "非卖品" in pname or "增值服务" in pname:
+        if "赠品" in pname or "非实物" in pname or "京服无忧" in pname or "权益" in pname or "非卖品" in pname or "增值服务" in pname:
             result = [
                 "赠品挺好的。",
                 "很贴心，能有这样免费赠送的赠品!",
@@ -245,7 +245,7 @@ def sunbw(N, opts=None):
     
         opts['logger'].info(f"当前共有{N['待评价订单']}个评价。")
         opts['logger'].debug('Commenting on items')
-        for i, Order in enumerate(Order_data):
+        for i, Order in enumerate(reversed(Order_data)):
             if i + 1 > 10:
                 opts['logger'].info(f'\t已评价10个订单，跳出')
                 break
@@ -393,7 +393,7 @@ def review(N, opts=None):
         #        Order_data.extend(elems)
         opts['logger'].info(f"当前共有{N['待追评']}个需要追评。")
         opts['logger'].debug('Commenting on items')
-        for i, Order in enumerate(Order_data):
+        for i, Order in enumerate(reversed(Order_data)):
             if i + 1 > 10:
                 opts['logger'].info(f'\t已评价10个订单，跳出')
                 break
@@ -480,7 +480,7 @@ def Service_rating(N, opts=None):
    #            Order_data.extend(elems)
         opts['logger'].info(f"当前共有{N['服务评价']}个需要服务评价。")
         opts['logger'].debug('Commenting on items')
-        for i, Order in enumerate(Order_data):
+        for i, Order in enumerate(reversed(Order_data)):
             if i + 1 > 10:
                 opts['logger'].info(f'\t已评价10个订单，跳出')
                 break
