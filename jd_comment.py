@@ -117,7 +117,7 @@ def generation(pname, _class=0, _type=1, opts=None):
         spider = jdspider.JDSpider(item,ck)
         opts['logger'].debug('Successfully created a JDSpider instance')
         # 增加对增值服务的评价鉴别
-        if "赠品" in pname or "非实物" in pname or "非卖品" in pname or "增值服务" in pname:
+        if "赠品" in pname or "非实物" in pname or "权益" in pname or "非卖品" in pname or "增值服务" in pname:
             result = [
                 "赠品挺好的。",
                 "很贴心，能有这样免费赠送的赠品!",
@@ -141,8 +141,8 @@ def generation(pname, _class=0, _type=1, opts=None):
         name = jieba.analyse.textrank(pname, topK=5, allowPOS='n')[0]
         opts['logger'].debug('Name: %s', name)
     except Exception as e:
-        opts['logger'].warning(
-            'jieba textrank analysis error: %s, name fallback to "宝贝"', e)
+    #    opts['logger'].warning(
+    #        'jieba textrank analysis error: %s, name fallback to "宝贝"', e)
         name = "宝贝"
     if _class == 1:
         opts['logger'].debug('_class is 1. Directly return name')
@@ -536,7 +536,7 @@ def main(opts=None):
     opts['logger'].debug('N value after executing No(): %s', N)
     if not N:
         opts['logger'].error('CK错误，请确认是否电脑版CK！')
-        exit()
+        return
     if N['待评价订单'] != 0:
         opts['logger'].info("1.开始评价晒单")
         N = sunbw(N, opts)
