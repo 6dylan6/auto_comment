@@ -14,7 +14,7 @@ import logging
 import os
 import random
 import sys
-import time
+import time,re
 
 
 try:
@@ -266,7 +266,7 @@ def sunbw(N, opts=None):
             opts['logger'].debug('Total loop times: %d', loop_times1)
             idx = 0
             for oname, pid in zip(oname_data, pid_data):
-                pid = pid.replace('//item.jd.com/', '').replace('.html', '')
+                pid = re.findall('(?<=jd.com/)[(0-9)*?]+',pid)[0]
                 opts['logger'].info(f'\t开始第{i+1}个订单: {oid}')
                 opts['logger'].debug('pid: %s', pid)
                 opts['logger'].debug('oid: %s', oid)
