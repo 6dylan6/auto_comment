@@ -462,7 +462,7 @@ def Service_rating(N, opts=None):
             opts['logger'].debug('Loop: %d / %d', idx + 1, loop_times)
             opts['logger'].debug('Fetching order data in the default XPath')
             elems = i.xpath(
-                '//*[@id="main"]/div[2]/div[2]/table/tbody/tr[@class="tr-bd"]')
+                '//*[@id="main"]/div[2]/div[2]/table/tbody/tr[@class="tr-th"]')
             opts['logger'].debug('Count of fetched order data: %d', len(elems))
             Order_data.extend(elems)
    #    if len(Order_data) != N['服务评价']:
@@ -484,8 +484,8 @@ def Service_rating(N, opts=None):
             if i + 1 > 10:
                 opts['logger'].info(f'\t已评价10个订单，跳出')
                 break
-            oname = Order.xpath('td[1]/div[1]/div[2]/div/a/text()')[0]
-            oid = Order.xpath('td[4]/div/a[1]/@oid')[0]
+            #oname = Order.xpath('td[1]/div[1]/div[2]/div/a/text()')[0]
+            oid = Order.xpath('td[1]/span[3]/a/text()')[0]
             opts['logger'].info(f'\t开始第{i+1}个订单: {oid}')
             opts['logger'].debug('oid: %s', oid)
             url1 = (f'https://club.jd.com/myJdcomments/insertRestSurvey.action'
