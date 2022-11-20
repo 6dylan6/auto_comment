@@ -286,12 +286,14 @@ def sunbw(N, opts=None):
                         'Status code of the response is %d, not 200', req1.status_code)
                 imgdata = req1.json()
                 opts['logger'].debug('Image data: %s', imgdata)
-                if imgdata["imgComments"]["imgCommentCount"] == 0:
+                if imgdata["imgComments"]["imgCommentCount"] > 10:
+                    pnum = random.randint(2,int(imgdata["imgComments"]["imgCommentCount"]/10)+1)
                     opts['logger'].debug('Count of fetched image comments is 0')
                     opts['logger'].debug('Fetching images using another URL')
-                    url1 = ('https://club.jd.com/discussion/getProductPageImage'
-                            'CommentList.action?productId=1190881')
+                    url1 = (f'https://club.jd.com/discussion/getProductPageImage'
+                            f'CommentList.action?productId={pid}&page={pnum}')
                     opts['logger'].debug('URL: %s', url1)
+                    time.sleep(1)
                     req1 = requests.get(url1, headers=headers)
                     opts['logger'].debug(
                         'Successfully accepted the response with status code %d',
@@ -300,11 +302,12 @@ def sunbw(N, opts=None):
                         opts['logger'].warning(
                             'Status code of the response is %d, not 200',
                             req1.status_code)
-                    imgdata = req1.json()
-                    opts['logger'].debug('Image data: %s', imgdata)
+                    imgdata2 = req1.json()
+                    opts['logger'].debug('Image data: %s', imgdata2)
                 try:
-                    imgurl = imgdata["imgComments"]["imgList"][0]["imageUrl"]
-                    imgurl2 = imgdata["imgComments"]["imgList"][1]["imageUrl"]
+                    imgurl = random.choice(imgdata["imgComments"]["imgList"])["imageUrl"]
+                    if ('imgdata2' in dir()):
+                        imgurl2 = random.choice(imgdata2["imgComments"]["imgList"])["imageUrl"]
                 except Exception:
                     imgurl = ''
                     imgurl2 = ''
