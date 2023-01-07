@@ -18,4 +18,6 @@ www的那个地址抓CK，登录后F12点到network，不要用命令document.co
 2022/11/16 修复有些订单匹配不到pid；服务评价报错
 2022/11/20 随机选取评价图片
 
+2023/1/7 还正常运行，有问题的多跑几次看看
+
 ![image](https://i.postimg.cc/NG6g4pHf/1.jpg)
