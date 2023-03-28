@@ -15,6 +15,7 @@ import os
 import random
 import sys
 import time,re
+import urllib.parse
 
 
 try:
@@ -326,7 +327,7 @@ def sunbw(N, opts=None):
                  'orderId': oid,
                  'productId': pid,
                  'score': str(xing),  # 商品几星
-                 'content': bytes(Str, encoding="gbk"),  # 评价内容
+                 'content': urllib.parse.quote(Str),  # 评价内容
                  'imgs': imgurl + ',' + imgurl2,
                  'saveStatus': 2,
                  'anonymousFlag': 1
@@ -417,7 +418,7 @@ def review(N, opts=None):
             data1 = {
                 'orderId': oid,
                 'productId': pid,
-                'content': bytes(context, encoding="gbk"),
+                'content': urllib.parse.quote(context),
                 'anonymousFlag': 1,
                 'score': 5
             }
