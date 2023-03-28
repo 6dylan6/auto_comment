@@ -23,4 +23,6 @@ www的那个地址抓CK，登录后F12点到network，不要用命令document.co
 
 2023/3/14 正常使用
 
+2023/3/28 修复评价内容乱码
+
 ![image](https://i.postimg.cc/NG6g4pHf/1.jpg)
