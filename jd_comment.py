@@ -4,9 +4,10 @@
 # @Author : @qiu-lzsnmb and @Dimlitter @Dylan
 # @File : auto_comment.py
 # 多账号评价，异常处理
+# 2023/3/28 修复乱码
 '''
 new Env('自动评价');
-8 8 2 10 * https://raw.githubusercontent.com/6dylan6/auto_comment/main/jd_comment.py
+8 8 2 1 * https://raw.githubusercontent.com/6dylan6/auto_comment/main/jd_comment.py
 '''
 import argparse
 import copy
