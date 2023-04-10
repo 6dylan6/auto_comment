@@ -310,6 +310,8 @@ def sunbw(N, opts=None):
                     imgurl = random.choice(imgdata["imgComments"]["imgList"])["imageUrl"]
                     if ('imgdata2' in dir()):
                         imgurl2 = random.choice(imgdata2["imgComments"]["imgList"])["imageUrl"]
+                    else:
+                        imgurl2 = ''
                 except Exception:
                     imgurl = ''
                     imgurl2 = ''
