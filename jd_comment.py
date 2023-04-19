@@ -5,6 +5,7 @@
 # @File : auto_comment.py
 # 多账号评价，异常处理
 # 2023/3/28 修复乱码
+# 2023/4/19 当存在OPENAI_API_KEY环境变量时，启用AI评价；网络环境问题自行想办法，国外机或配置ProxyUrl HTTP代理；
 '''
 new Env('自动评价');
 8 8 2 1 * https://raw.githubusercontent.com/6dylan6/auto_comment/main/jd_comment.py
@@ -26,17 +27,20 @@ try:
     #import yaml
     from lxml import etree
     import zhon.hanzi
+    import openai
 except:
     print('解决依赖问题...稍等')
     os.system('pip3 install lxml &> /dev/null')
     os.system('pip3 install jieba &> /dev/null')
     os.system('pip3 install zhon &> /dev/null')
     os.system('pip3 install requests &> /dev/null')
+    os.system('pip3 install openai &> /dev/null')
     import jieba 
     import jieba.analyse
     #import yaml
     from lxml import etree
     import requests
+    import openai
 
 import jdspider
 
@@ -106,6 +110,8 @@ class StyleFormatter(logging.Formatter):
 
 # 评价生成
 def generation(pname, _class=0, _type=1, opts=None):
+    if "OPENAI_API_KEY" in os.environ:
+        return generation_ai(pname, opts)
     opts = opts or {}
     items = ['商品名']
     items.clear()
@@ -162,6 +168,19 @@ def generation(pname, _class=0, _type=1, opts=None):
         opts['logger'].debug('Raw comments: %s', comments)
 
         return 5, comments.replace("$", name)
+
+# ChatGPT评价生成
+def generation_ai(pname, _class=0, _type=1, opts=None):
+    os.environ['http_proxy'] = os.getenv("ProxyUrl")
+    os.environ['https_proxy'] = os.getenv("ProxyUrl")
+    openai.api_key = os.getenv("OPENAI_API_KEY")
+    prompt = f"{pname} 写一段此商品的评价，简短、口语化"
+    response = openai.ChatCompletion.create(
+        model="gpt-3.5-turbo",
+        messages=[{"role": "user", "content": prompt}],
+        max_tokens=1024,
+    )
+    return 5, response.choices[0].message.content.strip()
 
 
 # 查询全部评价
