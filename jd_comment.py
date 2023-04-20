@@ -18,7 +18,7 @@ import random
 import sys
 import time,re
 import urllib.parse
-
+import jdspider
 
 try:
     import jieba  # just for linting
@@ -27,7 +27,7 @@ try:
     #import yaml
     from lxml import etree
     import zhon.hanzi
-    import openai
+    
 except:
     print('解决依赖问题...稍等')
     os.system('pip3 install lxml &> /dev/null')
@@ -42,8 +42,13 @@ except:
     import requests
     import openai
 
-import jdspider
-
+if "OPENAI_API_KEY" in os.environ:
+    print('已启用AI评价');
+    try:
+       import openai
+    except:
+       print('安装openai模块')
+       os.system('pip3 install openai &> /dev/null')
 
 # constants
 CONFIG_PATH = './config.yml'
