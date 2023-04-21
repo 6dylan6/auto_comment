@@ -703,7 +703,7 @@ if __name__ == '__main__':
             os.environ['https_proxy'] = os.getenv("ProxyUrl")
             logger.info('  - 使用QL配置文件ProxyUrl代理：' + os.environ["ProxyUrl"])
         else:
-            logger.info('  - 未任何代理，请确认当前网络环境可直连：api.openai.com')
+            logger.info('  - 未使用代理，请确认当前网络环境可直连：api.openai.com')
     try:
         i = 1
         for ck in cks:        
