@@ -1,5 +1,8 @@
 # auto_comment
-JD自动评价（带图评价晒单，追评，服务评价,）
+
+## JD自动评价
+
+支持评价晒单（带两张图），追评，服务评价，支持AI生成评价内容
 
 青龙拉库命令 ql repo https://github.com/6dylan6/auto_comment.git "jd_" "" "jdspider"
 
@@ -11,7 +14,7 @@ www的那个地址抓CK，登录后F12点到network，不要用命令document.co
 
 有问题欢迎提pr、issue
 
-更新日志：
+## 更新日志：
 
 2022/11/6 新增多账号； 报错不停止运行；带两个图评价晒单；倒序评价，优先比较老的订单
 
@@ -29,6 +32,6 @@ www的那个地址抓CK，登录后F12点到network，不要用命令document.co
 
 2023/4/22 移除openai依赖，优化代理方式，优化日志显示（Cp0204的pr）
 
-运行例图（评价晒单基本都显示是优质评价哦，能得京豆奖励！！！）：
+## 运行例图（评价晒单基本都显示是优质评价哦，评价有奖的订单可以获得京豆奖励！！！）：
 
 ![image](https://i.postimg.cc/KznsXxfN/1.png)
