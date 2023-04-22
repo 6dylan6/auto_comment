@@ -1,5 +1,5 @@
 # auto_comment
-JD自动评价（带图评价晒单，追评，服务评价）
+JD自动评价（带图评价晒单，追评，服务评价,）
 
 青龙拉库命令 ql repo https://github.com/6dylan6/auto_comment.git "jd_" "" "jdspider"
 
@@ -25,6 +25,8 @@ www的那个地址抓CK，登录后F12点到network，不要用命令document.co
 
 2023/3/28 修复评价内容乱码
 
-2023/4/19 添加gpt生成评价内容，当配置OPENAI_API_KEY环境变量启用（Cp0204的pr）
+2023/4/19 添加gpt生成评价内容，当配置OPENAI_API_KEY环境变量启用，具体用法看注释（Cp0204的pr）
 
-![image](https://i.postimg.cc/NG6g4pHf/1.jpg)
+2023/4/22 移除openai依赖，优化代理方式，优化日志显示（Cp0204的pr）
+
+![image](https://i.postimg.cc/KznsXxfN/1.png)
