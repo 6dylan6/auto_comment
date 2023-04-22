@@ -29,4 +29,6 @@ www的那个地址抓CK，登录后F12点到network，不要用命令document.co
 
 2023/4/22 移除openai依赖，优化代理方式，优化日志显示（Cp0204的pr）
 
+运行例图：
+
 ![image](https://i.postimg.cc/KznsXxfN/1.png)
