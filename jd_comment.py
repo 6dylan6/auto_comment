@@ -611,6 +611,11 @@ if __name__ == '__main__':
         'dry_run': args.dry_run,
         'log_level': args.log_level
     }
+    if "DEBUG" in os.environ and os.environ["DEBUG"] == 'true':
+        opts = {
+            'dry_run': args.dry_run,
+            'log_level': 'DEBUG'
+    }      
     if hasattr(args, 'log_file'):
         opts['log_file'] = args.log_file
     else:
