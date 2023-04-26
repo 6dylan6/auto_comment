@@ -18,7 +18,6 @@ import random
 import sys
 import time,re
 import urllib.parse
-import jdspider
 
 try:
     import jieba  # just for linting
@@ -39,7 +38,7 @@ except:
     #import yaml
     from lxml import etree
     import requests
-
+import jdspider
 # constants
 CONFIG_PATH = './config.yml'
 USER_CONFIG_PATH = './config.user.yml'
