@@ -33,11 +33,13 @@ except:
     os.system('pip3 install jieba &> /dev/null')
     os.system('pip3 install zhon &> /dev/null')
     os.system('pip3 install requests &> /dev/null')
+    os.system('pip3 install urllib3==1.25.11 &> /dev/null')
     import jieba 
     import jieba.analyse
     #import yaml
     from lxml import etree
     import requests
+    import urllib.parse
 import jdspider
 # constants
 CONFIG_PATH = './config.yml'
