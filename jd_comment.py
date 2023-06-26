@@ -184,7 +184,11 @@ def generation_ai(pname, _class=0, _type=1, opts=None):
         }
     )
     response_text = response.json()
-    return 5, response_text["choices"][0]["message"]["content"].strip()
+    if "error" in response_text:
+        print("\nOpenAI API 调用错误：\n", response_text["error"]["message"])
+        exit()
+    else:
+        return 5, response_text["choices"][0]["message"]["content"].strip()
 
 
 # 查询全部评价
