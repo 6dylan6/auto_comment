@@ -34,6 +34,8 @@ www的那个地址抓CK，登录后F12点到network，不要用命令document.co
 
 2023/6/27 gpt错误跳出（Cp0204的pr）
 
+2023/7/28 修复获取不到评价信息
+
 ## 运行例图（评价晒单基本是优质评价，评价有奖的订单可以获得奖励！！！）：
 
 ![image](https://i.postimg.cc/KznsXxfN/1.png)

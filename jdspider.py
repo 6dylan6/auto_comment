@@ -26,8 +26,8 @@ class JDSpider:
     # 爬虫实现类：传入商品类别（如手机、电脑），构造实例。然后调用getData搜集数据。
     def __init__(self, categlory, ck):
         # jD起始搜索页面
-        self.startUrl = "https://search.jd.com/Search?keyword=%s&enc=utf-8" % (
-            quote(categlory))
+        self.startUrl = "https://search.jd.com/Search?keyword=%s&enc=utf-8&wq=%s" % (
+            quote(categlory),quote(categlory))
         self.commentBaseUrl = "https://sclub.jd.com/comment/productPageComments.action?"
         self.headers = {
             'accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9',
