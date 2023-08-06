@@ -294,6 +294,8 @@ def sunbw(N, opts=None):
             opts['logger'].debug('Commenting on orders')
             opts['logger'].debug('Total loop times: %d', loop_times1)
             idx = 0
+            if 'javascript:void(0)' in pid_data:
+                continue
             for oname, pid in zip(oname_data, pid_data):
                 pid = re.findall('(?<=jd.com/)[(0-9)*?]+',pid)[0]
                 opts['logger'].info(f'\n开始第{i+1}个订单: {oid}')
