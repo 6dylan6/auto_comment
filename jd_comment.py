@@ -286,6 +286,10 @@ def sunbw(N, opts=None):
                 opts['logger'].debug('oname_data: %s', oname_data)
                 pid_data = Order.xpath(
                     'tr[@class="tr-bd"]/td[1]/div[1]/div[2]/div/a/@href')
+                opts['logger'].info(f'第{i + 1}个订单链接: %s',pid_data)
+                if pid_data and pid_data[0] == 'javascript:void(0)':
+                    opts['logger'].info(f'第{i + 1}个订单链接错误: %s',pid_data)
+                    continue
                 opts['logger'].debug('pid_data: %s', pid_data)
             except IndexError:
                 opts['logger'].warning(f"第{i + 1}个订单未查找到商品，跳过。")
@@ -408,7 +412,7 @@ def review(N, opts=None):
             opts['logger'].debug('Loop: %d / %d', idx + 1, loop_times)
             opts['logger'].debug('Fetching order data in the default XPath')
             elems = i.xpath(
-                '//*[@id="main"]/div[2]/div[2]/table/tr[@class="tr-bd"]')
+                '//*[@id="main"]/div[2]/div[2]/table/tbody/tr[@class="tr-bd"]')
             opts['logger'].debug('Count of fetched order data: %d', len(elems))
             Order_data.extend(elems)
         #if len(Order_data) != N['待追评']:
@@ -745,3 +749,4 @@ if __name__ == '__main__':
     # do like this?
     except RecursionError:
         logger.error("多次出现未完成情况，程序自动退出")
+
